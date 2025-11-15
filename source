@@ -1,0 +1,102 @@
+Execution Steps: Jenkins Pipeline (From Scratch)
+1️⃣ Open Jenkins → New Item
+
+Click New Item
+
+Enter name: student-crud-pipeline
+
+Select Pipeline
+
+Click OK
+
+2️⃣ Configure GitHub Source
+
+Scroll to Pipeline → Definition
+
+Select Pipeline script from SCM
+
+SCM: Git
+
+Repository URL:
+
+https://github.com/<your-username>/<repo>.git
+
+
+Credentials: Add if repo is private
+
+Branch: main
+
+3️⃣ Jenkinsfile inside your GitHub repo
+
+Create a file named Jenkinsfile at the root of your project:
+
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/<your-username>/<repo>.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo "BUILD SUCCESSFUL!"
+        }
+        failure {
+            echo "BUILD FAILED!"
+        }
+    }
+}
+
+
+💡 On Windows Jenkins use bat instead of sh:
+
+bat 'mvn clean install'
+bat 'mvn test'
+
+
+Commit and push:
+
+git add Jenkinsfile
+git commit -m "Added Jenkinsfile"
+git push
+
+4️⃣ Run the Pipeline
+
+In Jenkins:
+
+Open your pipeline → Click Build Now
+
+5️⃣ View Build Results
+
+Jenkins → select the build number (#1, #2, etc.)
+
+Click Console Output
+
+You will see:
+
+[INFO] BUILD SUCCESS
+Tests run: 5, Failures: 0, Errors: 0
+
+
+If a test fails:
+
+[ERROR] BUILD FAILURE
